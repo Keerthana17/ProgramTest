@@ -2,47 +2,63 @@
 session_start();
 include_once 'dbconnect.php';
 
-if(isset($_SESSION['user'])!="")
+if(!isset($_SESSION['user']))
 {
-	header("Location: home.php");
+    header("Location: index.php");
 }
+$usnm=$_SESSION['user'];
 
-if(isset($_POST['btn-login']))
+/*$res=mysql_query("SELECT * FROM users WHERE username='$usnm'");
+$userRow=mysql_fetch_array($res);*/
+
+if(isset($_POST['pgm-add']))
 {
-	$email = mysql_real_escape_string($_POST['email']);
-	$upass = mysql_real_escape_string($_POST['pass']);
+	$pname = mysql_real_escape_string($_POST['progname']);
+	$descr = mysql_real_escape_string($_POST['progdesc']);
 	
-	$email = trim($email);
-	$upass = trim($upass);
 	
-	$res=mysql_query("SELECT user_id, username, password FROM users WHERE email='$email'");
-	$row=mysql_fetch_array($res);
+	$pname = trim($pname);
+	$descr = trim($descr);
 	
-	$count = mysql_num_rows($res); // if uname/pass correct it returns must be 1 row
 	
-	if($count == 1 && $row['password']==md5($upass))
-	{
-		$_SESSION['user'] = $row['username'];
-		header("Location: home.php");
+	// email exist or not
+	$query = "SELECT program_user FROM program WHERE program_name='$pname'";
+	$result = mysql_query($query);
+	
+	$count = mysql_num_rows($result); // if email not found then register
+	
+	if($count == 0){
+		
+		if(mysql_query("INSERT INTO program(program_name,program_description) VALUES('$pname','$descr')"))
+		{
+			?>
+			<script>alert('Successfully added new program ');</script>
+			<?php
+		}
+		else
+		{
+			?>
+			<script>alert('Cannot create new program');</script>
+			<?php
+		}		
 	}
-	else
-	{
-		?>
-        <script>alert('Username / Password Seems Wrong !');</script>
-        <?php
+	else{
+			?>
+			<script>alert('Sorry program name already taken');</script>
+			<?php
 	}
 	
 }
 ?>
 <!DOCTYPE html>
-<html >
+<html>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-	<title>Programming++ - Login System</title>
+	<title>Programming++ - Registration System</title>
 	
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -63,11 +79,10 @@ if(isset($_POST['btn-login']))
     <![endif]-->
 
 </head>
-</head>
 
-<body>
+<body id="page-top" class="index">
 
-<!-- Navigation -->
+    <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -88,61 +103,85 @@ if(isset($_POST['btn-login']))
                         <a href="pgp_php1.html"></a>
                     </li>
                     <li class="page-scroll">
+                       <a href="">Hi <?php echo $usnm; ?>!</a>
+                    </li>
+                    <li class="page-scroll">
                         <a href="pgp_php1.html#about">About</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="register.php">Sign Up</a>
+                        <a href="prog++.html">Editor</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="prog++.html">Try Out</a>
+                        <a href="logout.php?logout">Log Out</a>
                     </li>
-                </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container-fluid -->
     </nav>
+<center>
 
-<!-- Contact Section -->
-    <section id="contact">
+<section id="contact">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                <br>
-                    <h2>Sign In</h2>
+                    <br><br>
+                    <h2>Add A Program</h2>
                     <hr class="star-primary">
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2">
-                <form method="post">
-                <div class="row control-group">
-                    <div class="form-group col-xs-12 floating-label-form-group controls">
-                        <label>Username</label>
-                        <input type="text" class="form-control" placeholder="Enter Your Email" id="email" name="email" required data-validation-required-message="Please enter your User name">
-                        <p class="help-block text-danger"></p>
-                    </div>
-                </div>
-                <div class="row control-group">
+                <div class="col-lg-8 col-lg-offset-2">               
+					<form method="post">
+						<div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
-                                <label>Password</label>
-                                <input type="password" class="form-control" placeholder="Enter Your Password" id="password" name="pass" required data-validation-required-message="Please enter your password.">
+                                <label>Program Name</label>
+                                <input type="text" name="progname" class="form-control" placeholder="Program Name" id="progname" required data-validation-required-message="Please enter a program name">
                                 <p class="help-block text-danger"></p>
                             </div>
                         </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Description</label>
+                                <input type="text" name="progdesc" class="form-control" placeholder="Program Description" id="progdesc" required data-validation-required-message="Please enter program description">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <!--<div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Password</label>
+                                <input type="password" name="pass" class="form-control" placeholder="Your Password" id="password" required data-validation-required-message="Please enter a password">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Image Link</label>
+                                <input type="text" class="form-control" placeholder="Image Link" id="imagelink" >
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>-->
                         <br>
                         <div id="success"></div>
                         <div class="row">
                             <div class="form-group col-xs-12">
-                                <button type="submit" name="btn-login" class="btn btn-success btn-lg">Login</button>
+                                <button type="submit" name="pgm-add" class="btn btn-success btn-lg">Submit</button>
                             </div>
                         </div>
                     </form>
-                    <a href="register.php">Sign Up Here</a></td>
+                    <ul class="list-inline">
+                            <li>
+                                <a href="home.php">Program List</a>
+                            </li>
+                            <li>
+                                <a href="progser.php">&nbsp;&nbsp;Search A Program</a>
+                            </li>
+                        </ul>
                 </div>
             </div>
         </div>
     </section>
+    </center>
 
     <!-- Footer -->
     <footer class="text-center">

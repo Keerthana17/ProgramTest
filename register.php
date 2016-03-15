@@ -17,7 +17,7 @@ if(isset($_POST['btn-signup']))
 	$upass = trim($upass);
 	
 	// email exist or not
-	$query = "SELECT user_email FROM users WHERE user_email='$email'";
+	$query = "SELECT email FROM users WHERE email='$email'";
 	$result = mysql_query($query);
 	
 	$count = mysql_num_rows($result); // if email not found then register
@@ -166,6 +166,7 @@ if(isset($_POST['btn-signup']))
             </div>
         </div>
     </section>
+    </center>
 
     <!-- Footer -->
     <footer class="text-center">
