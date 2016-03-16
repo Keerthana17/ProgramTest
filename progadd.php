@@ -29,7 +29,7 @@ if(isset($_POST['pgm-add']))
 	
 	if($count == 0){
 		
-		if(mysql_query("INSERT INTO program(program_name,program_description) VALUES('$pname','$descr')"))
+		if(mysql_query("INSERT INTO program(program_user,program_name,program_description) VALUES('$usnm','$pname','$descr')"))
 		{
 			?>
 			<script>alert('Successfully added new program ');</script>

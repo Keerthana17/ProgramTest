@@ -102,32 +102,35 @@ $userRow=mysql_fetch_array($res);*/
                 $sql = "SELECT program_name, program_description FROM program WHERE program_user = '$usnm'";
                 $result = mysql_query($sql) or die (mysql_error());
                 ?>
-                   <span class="skills"> <h3>User Program List : </h3></span><br />
-                   
+                   <p><p><h2>User Program List : </h2></p></p>
+                   <table>
+                   <tr><p><p>
+                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Program Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+
+                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Program Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    </p></p></tr>
+
                 <?php
 
-                    while($row = mysql_fetch_array($result)) 
+                    if (mysql_num_rows($result) > 0) 
+                    {
+                        // output data of each row
+                        while($row = mysql_fetch_assoc($result)) 
                         {
-                            $row2nm=$row["program_name"];
-                            $row2dc=$row["program_description"];
+                            echo "<tr><td align = 'left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                            echo $row["program_name"]. "</td><td align = 'left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                            echo $row["program_description"]. "</td>";
+                            echo "<td align = 'center'><form method='post' action='progupd.php'><input type='hidden' name='progname' value='<?php echo $row2nm; ?>'><input type='submit' name='delete' value='Edit'></form></td><td align = 'ceter'><form method='post' action='progdel.php'><input type='hidden' name='progname' value='<?php echo $row2nm; ?>'><input type='submit' name='delete' value='Delete'></form></td></tr>";
                         }
+                    } 
+                    else 
+                    {
+                        echo "0 results";
+                    }
 
-                   ?>
-                    <tr>
-                    <td>
-
-                    <form method="post" action="progdel.php">
-                    <input type="hidden" name="progname" value='<?php echo $row2nm; ?>'>
-                    <input type="submit" name="delete" value="Delete"></form>
-
-                    <form method="post" action="progupd.php">
-                    <input type="hidden" name="progname" value='<?php echo $row2nm; ?>'>
-                    <input type="submit" name="delete" value="Edit"></form>
-
-                    </td>
-                    <td align ="center"><?php echo $row2nm; ?></td>
-                    <td><?php echo $row2dc; ?></td>
-                    </tr>
+                    ?>
 
                     
                     </table><br />
