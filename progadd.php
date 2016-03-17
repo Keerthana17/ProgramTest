@@ -21,11 +21,11 @@ if(isset($_POST['pgm-add']))
 	$descr = trim($descr);
 	
 	
-	// email exist or not
+	// Does program exist or not
 	$query = "SELECT program_user FROM program WHERE program_name='$pname'";
 	$result = mysql_query($query);
 	
-	$count = mysql_num_rows($result); // if email not found then register
+	$count = mysql_num_rows($result); // If program not found, then register
 	
 	if($count == 0){
 		
@@ -58,7 +58,7 @@ if(isset($_POST['pgm-add']))
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-	<title>Programming++ - Registration System</title>
+	<title>Programming++ - Add A Program</title>
 	
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -172,6 +172,12 @@ if(isset($_POST['pgm-add']))
                     <ul class="list-inline">
                             <li>
                                 <a href="home.php">Program List</a>
+                            </li>
+                            <li>
+                                <a href="progupd.php">Update A Program</a>
+                            </li>
+                            <li>
+                                <a href="progdel.php">Delete A Program</a>
                             </li>
                             <li>
                                 <a href="progser.php">&nbsp;&nbsp;Search A Program</a>

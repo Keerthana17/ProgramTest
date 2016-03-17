@@ -108,8 +108,8 @@ $userRow=mysql_fetch_array($res);*/
                         <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Program Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
 
                         <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Program Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <!--<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>-->
                     </p></p></tr>
 
                 <?php
@@ -119,15 +119,32 @@ $userRow=mysql_fetch_array($res);*/
                         // output data of each row
                         while($row = mysql_fetch_assoc($result)) 
                         {
-                            echo "<tr><td align = 'left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                            echo $row["program_name"]. "</td><td align = 'left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                            echo $row["program_description"]. "</td>";
-                            echo "<td align = 'center'><form method='post' action='progupd.php'><input type='hidden' name='progname' value='<?php echo $row2nm; ?>'><input type='submit' name='delete' value='Edit'></form></td><td align = 'ceter'><form method='post' action='progdel.php'><input type='hidden' name='progname' value='<?php echo $row2nm; ?>'><input type='submit' name='delete' value='Delete'></form></td></tr>";
+                            $pgmid = $row['program_id'];
+
+                            ?>
+                            
+                            <tr>
+                                <td align = 'left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row["program_name"]; ?></td>
+                                <td align = 'left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php echo $row["program_description"]; ?></td>
+                                <!--<td align = 'center'>
+                                    <form method='post' action='progupd.php'>
+                                        <input type='hidden' name='program_id' value='<?php echo $pgmid; ?>'>
+                                        <input type='submit' name='delete' value='Edit'>
+                                    </form>
+                                </td>
+                                <td align = 'ceter'>
+                                    <form method='post' action='progdel.php'>
+                                    <input type='submit' name='program_id' value= "<?php echo $pgmid; ?>" >
+                                    <input type='submit' name='delete' value='Delete'>
+                                    </form>
+                                </td>-->
+                            </tr>
+                            <?php 
                         }
                     } 
                     else 
                     {
-                        echo "0 results";
+                        echo "<tr align = 'center'> 0 results </tr>";
                     }
 
                     ?>
@@ -140,6 +157,12 @@ $userRow=mysql_fetch_array($res);*/
                             </li>
                             <li>
                                 <a href="progser.php">&nbsp;&nbsp;Search A Program</a>
+                            </li>
+                            <li>
+                                <a href="progupd.php">Update A Program</a>
+                            </li>
+                            <li>
+                                <a href="progdel.php">Delete A Program</a>
                             </li>
                     </ul>
                 </div>
