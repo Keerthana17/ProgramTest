@@ -6,7 +6,26 @@
     based on morphic.js, blocks.js and threads.js
     inspired by Scratch
 
-   
+    written by Jens Mönig
+    jens@moenig.org
+
+    Copyright (C) 2016 by Jens Mönig
+
+    This file is part of Snap!.
+
+    Snap! is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
     prerequisites:
     --------------
@@ -36,70 +55,34 @@
     * defined in Morphic.js
 
 
-    
+    credits
+    -------
+    Ian Reynolds contributed initial porting of primitives from Squeak and
+    sound handling
+    Achal Dave contributed research and prototyping for creating music
+    using the Web Audio API
+    Yuan Yuan contributed graphic effects for costumes
+
 */
-
-// globals from paint.js:
-/*global PaintEditorMorph*/
-
-// globals from lists.js:
-
-/*global ListWatcherMorph*/
-
-// gloabls from widgets.js:
-
-/*global PushButtonMorph, ToggleMorph, DialogBoxMorph, InputFieldMorph*/
-
-// gloabls from gui.js:
-
-/*global WatcherMorph, SpriteIconMorph*/
-
-// globals from threads.js:
-
-/*global ArgMorph, BlockMorph, Process, StackFrame, ThreadManager,
-VariableFrame, detect, threadsVersion*/
-
-// globals from blocks.js:
-
-/*global ArgMorph, ArrowMorph, BlockHighlightMorph, BlockMorph,
-BooleanSlotMorph, BoxMorph, Color, ColorPaletteMorph, ColorSlotMorph,
-CommandBlockMorph, CommandSlotMorph, FrameMorph, HatBlockMorph,
-InputSlotMorph, MenuMorph, Morph, MultiArgMorph, Point,
-ReporterBlockMorph, ScriptsMorph, ShaAwMorph, StringMorph,
-SyntaxElementMorph, TextMorph, WorldMorph, blocksVersion, contains,
-degrees, detect, getDocumentPositionOf, newCanvas, nop, radians,
-useBlurredShadows*/
-
-// globals from morphic.js:
-
-/*global Array, BlinkerMorph, BouncerMorph, BoxMorph, CircleBoxMorph,
-Color, ColorPaletteMorph, ColorPickerMorph, CursorMorph, Date,
-FrameMorph, Function, GrayPaletteMorph, HandMorph, HandleMorph,
-InspectorMorph, ListMorph, Math, MenuItemMorph, MenuMorph, Morph,
-MorphicPreferences, MouseSensorMorph, Node, Object, PenMorph, Point,
-Rectangle, ScrollFrameMorph, ShadowMorph, SliderButtonMorph,
-SliderMorph, String, StringFieldMorph, StringMorph, TextMorph,
-TriggerMorph, WorldMorph, contains, copy, degrees, detect,
-document, getDocumentPositionOf, isNaN, isObject, isString, newCanvas,
-nop, parseFloat, radians, standardSettings, touchScreenSettings,
-useBlurredShadows, version, window, modules, IDE_Morph, VariableDialogMorph,
-HTMLCanvasElement, Context, List, SpeechBubbleMorph, RingMorph, isNil,
-FileReader*/
-
-// globals from byob.js:
-
-/*global CustomBlockDefinition, BlockEditorMorph, BlockDialogMorph,
-PrototypeHatBlockMorph*/
-
-// globals from locale.js:
-
-/*global localize*/
-
-// temporary globals
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.objects = '2015-December-22';
+/*global PaintEditorMorph, ListWatcherMorph, PushButtonMorph, ToggleMorph,
+DialogBoxMorph, InputFieldMorph, SpriteIconMorph, BlockMorph,
+ThreadManager, VariableFrame, detect, BlockMorph, BoxMorph, Color,
+CommandBlockMorph, FrameMorph, HatBlockMorph, MenuMorph, Morph, MultiArgMorph,
+Point, ReporterBlockMorph, ScriptsMorph, StringMorph, SyntaxElementMorph,
+TextMorph, contains, degrees, detect, newCanvas, nop, radians, Array,
+CursorMorph, Date, FrameMorph, HandMorph, Math, MenuMorph, Morph,
+MorphicPreferences, Object, PenMorph, Point, Rectangle, ScrollFrameMorph,
+SliderMorph, String, StringMorph, TextMorph, contains, copy, degrees, detect,
+document, isNaN, isString, newCanvas, nop, parseFloat, radians, window,
+modules, IDE_Morph, VariableDialogMorph, HTMLCanvasElement, Context, List,
+SpeechBubbleMorph, RingMorph, isNil, FileReader, TableDialogMorph,
+BlockEditorMorph, BlockDialogMorph, PrototypeHatBlockMorph, localize,
+TableMorph, TableFrameMorph*/
+
+modules.objects = '2016-March-06';
 
 var SpriteMorph;
 var StageMorph;
@@ -1173,6 +1156,15 @@ SpriteMorph.prototype.initBlocks = function () {
             defaults: [localize('each item')]
         },
 
+        // Tables - experimental
+
+        doShowTable: {
+            dev: true,
+            type: 'command',
+            category: 'lists',
+            spec: 'show table %l'
+        },
+
         // Code mapping - experimental
         doMapCodeOrHeader: { // experimental
             type: 'command',
@@ -2114,6 +2106,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
             blocks.push(block('reportMap'));
             blocks.push('-');
             blocks.push(block('doForEach'));
+            blocks.push(block('doShowTable'));
         }
 
     /////////////////////////////////
@@ -3298,6 +3291,10 @@ SpriteMorph.prototype.isCorrectingOutsideDrag = function () {
 };
 
 SpriteMorph.prototype.justDropped = function () {
+    var stage = this.parentThatIsA(StageMorph);
+    if (stage) {
+        stage.enableCustomHatBlocks = true;
+    }
     this.restoreLayers();
     this.positionTalkBubble();
     this.receiveUserInteraction('dropped');
@@ -5747,6 +5744,7 @@ StageMorph.prototype.blockTemplates = function (category) {
             blocks.push(block('reportMap'));
             blocks.push('-');
             blocks.push(block('doForEach'));
+            blocks.push(block('doShowTable'));
         }
 
     /////////////////////////////////
@@ -6172,7 +6170,7 @@ SpriteBubbleMorph.prototype.init = function (
 
 // SpriteBubbleMorph contents formatting
 
-SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
+SpriteBubbleMorph.prototype.dataAsMorph = function (data, toggle) {
     var contents,
         sprite = SpriteMorph.prototype,
         isText,
@@ -6210,15 +6208,24 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
         contents.silentSetHeight(data.height);
         contents.image = data;
     } else if (data instanceof List) {
-        contents = new ListWatcherMorph(data);
-        contents.isDraggable = false;
-        contents.update(true);
-        contents.step = contents.update;
-        if (this.stage) {
-            contents.expand(this.stage.extent().translateBy(
-                -2 * (this.edge + this.border + this.padding)
-            ));
+        if (!toggle && data.isTable()) {
+            contents = new TableFrameMorph(new TableMorph(data, 10));
+            if (this.stage) {
+                contents.expand(this.stage.extent().translateBy(
+                    -2 * (this.edge + this.border + this.padding)
+                ));
+            }
+        } else {
+            contents = new ListWatcherMorph(data);
+            contents.update(true);
+            contents.step = contents.update;
+            if (this.stage) {
+                contents.expand(this.stage.extent().translateBy(
+                    -2 * (this.edge + this.border + this.padding)
+                ));
+            }
         }
+        contents.isDraggable = false;
     } else if (data instanceof Context) {
         img = data.image();
         contents = new Morph();
@@ -6272,7 +6279,7 @@ SpriteBubbleMorph.prototype.setScale = function (scale) {
 
 // SpriteBubbleMorph drawing:
 
-SpriteBubbleMorph.prototype.drawNew = function () {
+SpriteBubbleMorph.prototype.drawNew = function (toggle) {
     var sprite = SpriteMorph.prototype;
 
     // scale my settings
@@ -6284,7 +6291,7 @@ SpriteBubbleMorph.prototype.drawNew = function () {
     if (this.contentsMorph) {
         this.contentsMorph.destroy();
     }
-    this.contentsMorph = this.dataAsMorph(this.data);
+    this.contentsMorph = this.dataAsMorph(this.data, toggle);
     this.add(this.contentsMorph);
 
     // adjust my layout
@@ -7004,24 +7011,26 @@ CellMorph.prototype.fixLayout = function () {
 
 // CellMorph drawing:
 
-CellMorph.prototype.drawNew = function () {
+CellMorph.prototype.drawNew = function (toggle, type) {
     var context,
         txt,
         img,
         fontSize = SyntaxElementMorph.prototype.fontSize,
         isSameList = this.contentsMorph instanceof ListWatcherMorph
-                && (this.contentsMorph.list === this.contents);
+                && (this.contentsMorph.list === this.contents),
+        isSameTable = this.contentsMorph instanceof TableFrameMorph
+                && (this.contentsMorph.tableMorph.table === this.contents);
 
     if (this.isBig) {
         fontSize = fontSize * 1.5;
     }
 
     // re-build my contents
-    if (this.contentsMorph && !isSameList) {
+    if (toggle || (this.contentsMorph && !isSameList && !isSameTable)) {
         this.contentsMorph.destroy();
     }
 
-    if (!isSameList) {
+    if (toggle || (!isSameList && !isSameTable)) {
         if (this.contents instanceof Morph) {
             this.contentsMorph = this.contents;
         } else if (isString(this.contents)) {
@@ -7067,23 +7076,31 @@ CellMorph.prototype.drawNew = function () {
             this.contentsMorph.silentSetHeight(img.height);
             this.contentsMorph.image = img;
         } else if (this.contents instanceof List) {
-            if (this.isCircular()) {
-                this.contentsMorph = new TextMorph(
-                    '(...)',
-                    fontSize,
-                    null,
-                    false, // bold
-                    true, // italic
-                    'center'
-                );
-                this.contentsMorph.setColor(new Color(255, 255, 255));
-            } else {
-                this.contentsMorph = new ListWatcherMorph(
+            if ('table' === type || (!toggle && this.contents.isTable())) {
+                this.contentsMorph = new TableFrameMorph(new TableMorph(
                     this.contents,
-                    this
-                );
-                this.contentsMorph.isDraggable = false;
+                    10
+                ));
+                this.contentsMorph.expand(new Point(200, 150));
+            } else {
+                if (this.isCircular()) {
+                    this.contentsMorph = new TextMorph(
+                        '(...)',
+                        fontSize,
+                        null,
+                        false, // bold
+                        true, // italic
+                        'center'
+                    );
+                    this.contentsMorph.setColor(new Color(255, 255, 255));
+                } else {
+                    this.contentsMorph = new ListWatcherMorph(
+                        this.contents,
+                        this
+                    );
+                }
             }
+            this.contentsMorph.isDraggable = false;
         } else {
             this.contentsMorph = new TextMorph(
                 !isNil(this.contents) ? this.contents.toString() : '',
@@ -7145,7 +7162,7 @@ CellMorph.prototype.drawNew = function () {
     }
 
     // position my contents
-    if (!isSameList) {
+    if (toggle || (!isSameList && !isSameTable)) {
         this.contentsMorph.setCenter(this.center());
     }
 };
@@ -7256,6 +7273,15 @@ CellMorph.prototype.mouseClickLeft = function (pos) {
         this.contentsMorph.selectAllAndEdit();
     } else {
         this.escalateEvent('mouseClickLeft', pos);
+    }
+};
+
+CellMorph.prototype.mouseDoubleClick = function (pos) {
+    if (List.prototype.enableTables &&
+            this.currentValue instanceof List) {
+        new TableDialogMorph(this.contents).popUp(this.world());
+    } else {
+        this.escalateEvent('mouseDoubleClick', pos);
     }
 };
 
@@ -7553,6 +7579,15 @@ WatcherMorph.prototype.fixLayout = function () {
 };
 
 // WatcherMorph events:
+
+WatcherMorph.prototype.mouseDoubleClick = function (pos) {
+    if (List.prototype.enableTables &&
+            this.currentValue instanceof List) {
+        new TableDialogMorph(this.currentValue).popUp(this.world());
+    } else {
+        this.escalateEvent('mouseDoubleClick', pos);
+    }
+};
 
 /*
 // Scratch-like watcher-toggling, commented out b/c we have a drop-down menu

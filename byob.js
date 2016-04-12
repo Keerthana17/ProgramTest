@@ -2,7 +2,30 @@
 
     byob.js
 
-    "build your own blocks" 
+    "build your own blocks" for SNAP!
+    based on morphic.js, widgets.js blocks.js, threads.js and objects.js
+    inspired by Scratch
+
+    written by Jens Mönig
+    jens@moenig.org
+
+    Copyright (C) 2016 by Jens Mönig
+
+    This file is part of Snap!.
+
+    Snap! is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
     prerequisites:
     --------------
@@ -81,11 +104,11 @@ contains, InputSlotMorph, ToggleButtonMorph, IDE_Morph, MenuMorph, copy,
 ToggleElementMorph, Morph, fontHeight, StageMorph, SyntaxElementMorph,
 SnapSerializer, CommentMorph, localize, CSlotMorph, SpeechBubbleMorph,
 MorphicPreferences, SymbolMorph, isNil, CursorMorph, VariableFrame,
-WatcherMorph*/
+WatcherMorph, Variable*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.byob = '2016-January-11';
+modules.byob = '2016-February-24';
 
 // Declarations
 
@@ -397,11 +420,15 @@ CustomCommandBlockMorph.prototype.init = function (definition, isProto) {
     }
 };
 
-CustomCommandBlockMorph.prototype.initializeVariables = function () {
+CustomCommandBlockMorph.prototype.initializeVariables = function (oldVars) {
     var myself = this;
     this.variables = new VariableFrame();
     this.definition.variableNames.forEach(function (name) {
-        myself.variables.addVar(name);
+        var v = oldVars ? oldVars[name] : null;
+        myself.variables.addVar(
+            name,
+            v instanceof Variable ? v.value : null
+        );
     });
 };
 
@@ -440,8 +467,8 @@ CustomCommandBlockMorph.prototype.refresh = function (silently) {
     });
 
     // initialize block vars
-    // to do: preserve values of unchanged variable names
-    this.initializeVariables();
+    // preserve values of unchanged variable names
+    this.initializeVariables(this.variables.vars);
 
     // make (double) sure I'm colored correctly
     this.forceNormalColoring();
@@ -461,7 +488,7 @@ CustomCommandBlockMorph.prototype.restoreInputs = function (oldInputs) {
         old = oldInputs[i];
         if (old instanceof ReporterBlockMorph &&
                 (!(inp instanceof TemplateSlotMorph))) {
-            myself.silentReplaceInput(inp, old);
+            myself.silentReplaceInput(inp, old.fullCopy());
         } else if (old instanceof InputSlotMorph
                 && inp instanceof InputSlotMorph) {
             inp.setContents(old.evaluate());
@@ -1802,6 +1829,10 @@ BlockEditorMorph.prototype.init = function (definition, target) {
     this.setExtent(new Point(375, 300)); // normal initial extent
     this.fixLayout();
     scripts.fixMultiArgs();
+
+    block = proto.parts()[0];
+    block.forceNormalColoring();
+    block.fixBlockColor(proto, true);
 };
 
 BlockEditorMorph.prototype.popUp = function () {

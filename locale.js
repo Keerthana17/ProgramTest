@@ -2,14 +2,39 @@
 
     locale.js
 
-    spoken language translation 
+    spoken language translation for SNAP!
+
+    written by Jens Mönig
+
+    Copyright (C) 2016 by Jens Mönig
+
+    This file is part of Snap!.
+
+    Snap! is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    
+    Attention Translators!
+    ----------------------
+    Please refer to the documentation in the file
 
         lang-de.js
 
-    
+    or to the separate file
+
+        translating Snap.txt
+
+    (same contents) if you would like to contribute.
 
 */
 
@@ -17,7 +42,7 @@
 
 /*global modules, contains*/
 
-modules.locale = '2016-January-08';
+modules.locale = '2016-February-24';
 
 // Global stuff
 
@@ -87,7 +112,7 @@ Localizer.prototype.unload = function () {
     });
 };
 
-// Translator initialization
+// SnapTranslator initialization
 
 SnapTranslator.dict.en = {
     // meta information
@@ -136,7 +161,7 @@ SnapTranslator.dict.de = {
     'translator_e-mail':
         'jens@moenig.org',
     'last_changed':
-        '2015-12-22'
+        '2016-02-24'
 };
 
 SnapTranslator.dict.it = {
@@ -240,11 +265,11 @@ SnapTranslator.dict.fr = {
     'language_name':
         'Fran\u00E7ais',
     'language_translator':
-        'Jean-Jacques Valliet, Mark Rafter, Martin Quinson',
+        'Jean-Jacques Valliet, Mark Rafter, Martin Quinson, Damien Caselli',
     'translator_e-mail':
         'i.scool@mac.com',
     'last_changed':
-        '2015-06-25'
+        '2016-02-24'
 };
 
 SnapTranslator.dict.si = {
@@ -364,7 +389,7 @@ SnapTranslator.dict.ca = {
     'translator_e-mail':
         'bromagosa@citilab.eu',
     'last_changed':
-        '2015-09-23'
+        '2016-02-24'
 };
 
 SnapTranslator.dict.fi = {
@@ -540,5 +565,5 @@ SnapTranslator.dict.ar = {
     'translator_e-mail':
         'tarekgalal46@hotmail.com', // optional
     'last_changed':
-        '2015-12-18'
+        '2016-02-24'
 };

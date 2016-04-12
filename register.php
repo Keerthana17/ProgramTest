@@ -104,7 +104,7 @@ if(isset($_POST['btn-signup']))
                         <a href="index.php">Sign In</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="prog++.html">Try Out</a>
+                        <a href="snap.html">Try Out</a>
                     </li>
             </div>
             <!-- /.navbar-collapse -->

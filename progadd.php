@@ -23,7 +23,7 @@ if(isset($_POST['pgm-add']))
 	
 	// Does program exist or not
 	$query = "SELECT program_user FROM program WHERE program_name='$pname'";
-	$result = mysql_query($query);
+	$result = mysql_query($query) or die (mysql_error());
 	
 	$count = mysql_num_rows($result); // If program not found, then register
 	
@@ -44,7 +44,7 @@ if(isset($_POST['pgm-add']))
 	}
 	else{
 			?>
-			<script>alert('Sorry program name already taken');</script>
+			<script>alert('Sorry program name already taken');</script>z
 			<?php
 	}
 	
@@ -109,7 +109,7 @@ if(isset($_POST['pgm-add']))
                         <a href="pgp_php1.html#about">About</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="prog++.html">Editor</a>
+                        <a href="snap.html">Editor</a>
                     </li>
                     <li class="page-scroll">
                         <a href="logout.php?logout">Log Out</a>
@@ -179,10 +179,11 @@ if(isset($_POST['pgm-add']))
                             <li>
                                 <a href="progdel.php">Delete A Program</a>
                             </li>
-                            <li>
-                                <a href="progser.php">&nbsp;&nbsp;Search A Program</a>
-                            </li>
                         </ul>
+                    <!--<form method="post" action="progsearch.php">
+                    <input type="text" name="search" />
+                    <input type="submit" name="submit" value="Search" >
+                    </form>-->
                 </div>
             </div>
         </div>

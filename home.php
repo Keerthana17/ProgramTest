@@ -65,7 +65,7 @@ $userRow=mysql_fetch_array($res);*/
                         <a href="pgp_php1.html#about">About</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="prog++.html">Editor</a>
+                        <a href="snap.html">Editor</a>
                     </li>
                     <li class="page-scroll">
                         <a href="logout.php?logout">Log Out</a>
@@ -128,13 +128,13 @@ $userRow=mysql_fetch_array($res);*/
                                 <td align = 'left'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php echo $row["program_description"]; ?></td>
                                 <!--<td align = 'center'>
                                     <form method='post' action='progupd.php'>
-                                        <input type='hidden' name='program_id' value='<?php echo $pgmid; ?>'>
+                                        <input type='hidden' name='program_id' value='<?php $pgmid; ?>'>
                                         <input type='submit' name='delete' value='Edit'>
                                     </form>
                                 </td>
                                 <td align = 'ceter'>
                                     <form method='post' action='progdel.php'>
-                                    <input type='submit' name='program_id' value= "<?php echo $pgmid; ?>" >
+                                    <input type='submit' name='program_id' value= "<?php  $pgmid; ?>" >
                                     <input type='submit' name='delete' value='Delete'>
                                     </form>
                                 </td>-->
@@ -156,15 +156,16 @@ $userRow=mysql_fetch_array($res);*/
                                 <a href="progadd.php">Add New Program</a>
                             </li>
                             <li>
-                                <a href="progser.php">&nbsp;&nbsp;Search A Program</a>
-                            </li>
-                            <li>
                                 <a href="progupd.php">Update A Program</a>
                             </li>
                             <li>
                                 <a href="progdel.php">Delete A Program</a>
                             </li>
                     </ul>
+                    <!--<form method="post" action="progsearch.php">
+                    <input type="text" name="search" />
+                    <input type="submit" name="submit" value="Search" >
+                    </form>-->
                 </div>
             </div>
         </div>

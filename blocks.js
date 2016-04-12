@@ -2,7 +2,36 @@
 
     blocks.js
 
-   
+    a programming construction kit
+    based on morphic.js
+    inspired by Scratch
+
+    written by Jens Mönig
+    jens@moenig.org
+
+    Copyright (C) 2016 by Jens Mönig
+
+    This file is part of Snap!.
+
+    Snap! is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+    prerequisites:
+    --------------
+    needs morphic.js
+
+
     hierarchy
     ---------
     the following tree lists all constructors hierarchically,
@@ -103,30 +132,24 @@
 
     and the block they're attached to - if any: Their parent.
 
-    
+    please also refer to the high-level comment at the beginning of each
+    constructor for further details.
 */
 
-/*global Array, BlinkerMorph, BouncerMorph, BoxMorph, CircleBoxMorph,
-Color, ColorPaletteMorph, ColorPickerMorph, CursorMorph, Date,
-FrameMorph, Function, GrayPaletteMorph, HandMorph, HandleMorph,
-InspectorMorph, ListMorph, Math, MenuItemMorph, MenuMorph, Morph,
-MorphicPreferences, MouseSensorMorph, Node, Object, PenMorph, Point,
-Rectangle, ScrollFrameMorph, ShadowMorph, SliderButtonMorph,
-SliderMorph, String, StringFieldMorph, StringMorph, TextMorph,
-TriggerMorph, WorldMorph, clone, contains, copy, degrees, detect,
-document, getDocumentPositionOf, isNaN, isObject, isString, newCanvas,
-nop, parseFloat, radians, standardSettings, touchScreenSettings,
-useBlurredShadows, version, window, SpeechBubbleMorph, modules, StageMorph,
-fontHeight*/
-
-/*global SpriteMorph, Context, ListWatcherMorph, CellMorph,
-DialogBoxMorph, BlockInputFragmentMorph, PrototypeHatBlockMorph, Costume*/
-
-/*global IDE_Morph, BlockDialogMorph, BlockEditorMorph, localize, isNil*/
+/*global Array, BoxMorph,
+Color, ColorPaletteMorph, CursorMorph, FrameMorph, Function, HandleMorph,
+Math, MenuMorph, Morph, MorphicPreferences, Object, Point, ScrollFrameMorph,
+ShadowMorph, String, StringMorph, TextMorph, WorldMorph, contains, degrees,
+detect, document, getDocumentPositionOf, isNaN, isString, newCanvas, nop,
+parseFloat, radians, useBlurredShadows, SpeechBubbleMorph, modules,
+StageMorph, fontHeight, TableFrameMorph, SpriteMorph, Context,
+ListWatcherMorph, CellMorph, DialogBoxMorph, BlockInputFragmentMorph,
+PrototypeHatBlockMorph, Costume, IDE_Morph, BlockDialogMorph,
+BlockEditorMorph, localize, isNil*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.blocks = '2016-January-16';
+modules.blocks = '2016-February-24';
 
 var SyntaxElementMorph;
 var BlockMorph;
@@ -1760,6 +1783,11 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic) {
         morphToShow.isDraggable = false;
         morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
         isClickable = true;
+    } else if (value instanceof TableFrameMorph) {
+        morphToShow = value;
+        morphToShow.isDraggable = false;
+        morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
+        isClickable = true;
     } else if (value instanceof Morph) {
         img = value.fullImage();
         morphToShow = new Morph();
@@ -2570,6 +2598,7 @@ BlockMorph.prototype.restoreInputs = function (oldInputs) {
 BlockMorph.prototype.showHelp = function () {
     var myself = this,
         ide = this.parentThatIsA(IDE_Morph),
+        blockEditor,
         pic = new Image(),
         help,
         comment,
@@ -2578,6 +2607,13 @@ BlockMorph.prototype.showHelp = function () {
         spec = isCustomBlock ?
                 this.definition.helpSpec() : this.selector,
         ctx;
+
+    if (!ide) {
+        blockEditor = this.parentThatIsA(BlockEditorMorph);
+        if (blockEditor) {
+            ide = blockEditor.target.parentThatIsA(IDE_Morph);
+        }
+    }
 
     pic.onload = function () {
         help = newCanvas(new Point(pic.width, pic.height));
@@ -3758,6 +3794,7 @@ CommandBlockMorph.prototype.userDestroyJustThis = function () {
         above,
         cslot = this.parentThatIsA(CSlotMorph);
 
+    this.topBlock().fullChanged();
     if (this.parent) {
         pb = this.parent.parentThatIsA(CommandBlockMorph);
     }
@@ -4374,7 +4411,7 @@ ReporterBlockMorph.prototype.snap = function (hand) {
         target;
 
     this.cachedSlotSpec = null;
-    if (!scripts instanceof ScriptsMorph) {
+    if (!(scripts instanceof ScriptsMorph)) {
         return null;
     }
 
@@ -4546,6 +4583,7 @@ ReporterBlockMorph.prototype.ExportResultPic = function () {
 
 ReporterBlockMorph.prototype.userDestroy = function () {
     // make sure to restore default slot of parent block
+    this.topBlock().fullChanged();
     this.prepareToBeGrabbed(this.world().hand);
     this.destroy();
 };
@@ -11211,7 +11249,7 @@ CommentMorph.prototype.snap = function (hand) {
     var scripts = this.parent,
         target;
 
-    if (!scripts instanceof ScriptsMorph) {
+    if (!(scripts instanceof ScriptsMorph)) {
         return null;
     }
 
